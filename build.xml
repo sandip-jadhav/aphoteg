@@ -1,0 +1,120 @@
+<project name="Association of Photos to Text" default="compile" basedir=".">
+
+  <property name="app.name" value="photo-association-demo"/>
+  <property name="manager.url" value="http://localhost:8080/manager/" />
+  <property name="manager.username" value="admin"/>
+  <property name="manager.password" value="admin"/>
+
+  <path id="classpath.standard">
+    <pathelement location="/usr/share/java/qizx.jar"/>
+    <pathelement location="/usr/share/java/jhall.jar"/>
+    <pathelement location="/usr/share/java/resolver.jar"/>
+    <pathelement location="/usr/share/java/lingpipe.jar"/>
+    <pathelement location="/usr/share/java/commons-fileupload.jar"/>
+    <pathelement location="/usr/share/java/commons-io.jar" />
+    <pathelement location="/usr/share/java/nekohtml.jar" />
+    <pathelement location="/usr/share/java/lucene-snowball.jar" />
+  	<pathelement location="/usr/share/java/servlet-api.jar" />
+    <pathelement location="/usr/share/java/weka.jar"/>
+    <pathelement location="/usr/share/java/ngramj.jar"/>
+    <pathelement location="/usr/share/java/xml-apis.jar" />
+    <pathelement location="/usr/share/java/xercesImpl.jar" />
+    <pathelement location="${app.name}.jar"/>
+    <pathelement location="bin"/>
+   </path>
+
+  <target name="clean">
+    <delete file="${app.name}.jar"/>
+    <delete file="${app.name}.war"/>
+    <delete dir="war"/>
+    <delete dir="bin"/>
+    <mkdir dir="bin"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="bin"/>
+    <javac includeAntRuntime="false" srcdir="src" destdir="bin" debug="yes" deprecation="yes" optimize="yes">
+      <compilerarg value="-Xlint:all"/>
+      <classpath refid="classpath.standard"/>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${app.name}.jar">
+	  <fileset dir="src" includes="**/*"/>
+      <fileset dir="bin" includes="**/*.class"/>
+    </jar>
+  </target>
+
+  <target name="run" depends="jar">
+	 <!-- <java fork="yes" classname="photoassociation.Put">
+         <classpath refid="classpath.standard"/>
+	 	<sysproperty key="xml.catalog.files" value="${basedir}/../../xhtml_dtd/catalog.xml" />
+	    <sysproperty key="xml.catalog.prefer" value="public" />
+	    <sysproperty key="xml.catalog.verbosity" value="0" />
+	 </java> -->
+	 <java fork="yes" classname="com.qizx.apps.QizxCLI">
+        	<classpath refid="classpath.standard"/>
+        	<arg value="./src/xquery/project-euclid.xqy"/>
+	 </java>
+  </target>
+ 
+  <target name="qixz" depends="jar">
+	 <java fork="yes" classname="com.qizx.apps.studio.QizxStudio">
+       	<classpath refid="classpath.standard"/>
+	 </java>
+  </target>
+
+  <target name="war" depends="jar">
+    <mkdir dir="war"/>
+    <copy todir="war"><fileset dir="webapp"/></copy>
+    <mkdir dir="war/WEB-INF/lib"/>
+    <copy todir="war/WEB-INF/lib">
+      <fileset file="${app.name}.jar"/>
+      <fileset file="/usr/share/java/qizx.jar"/>
+      <fileset file="/usr/share/java/jhall.jar"/>
+      <fileset file="/usr/share/java/resolver.jar"/>
+      <fileset file="/usr/share/java/lingpipe.jar"/>
+      <fileset file="/usr/share/java/commons-fileupload.jar"/>
+      <fileset file="/usr/share/java/commons-io.jar"/>
+      <fileset file="/usr/share/java/nekohtml.jar"/>
+      <fileset file="/usr/share/java/lucene-snowball.jar" />
+      <fileset file="/usr/share/java/xml-apis.jar"/>
+      <fileset file="/usr/share/java/weka.jar"/>
+      <fileset file="/usr/share/java/ngramj.jar"/>
+      <fileset file="/usr/share/java/xercesImpl.jar"/>
+    </copy>
+    <jar destfile="${app.name}.war">
+      <fileset dir="war"/>
+    </jar>
+    <delete dir="war"/>
+    <delete dir="models"/>
+    <delete file="${app.name}.jar"/>
+  </target>
+
+  <target name="deploy" depends="war">
+    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
+        <classpath>
+           <pathelement location="/usr/share/java/catalina-ant.jar"/>
+        </classpath>
+    </taskdef>
+    <deploy url="${manager.url}" 
+            username="${manager.username}" 
+            password="${manager.password}" 
+            path="/${app.name}" 
+            war="${app.name}.war"/>
+    <delete file="${app.name}.war"/>
+  </target>
+
+  <target name="undeploy">
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+        <classpath>
+           <pathelement location="/usr/share/java/catalina-ant.jar"/>
+        </classpath>
+    </taskdef>
+    <undeploy url="${manager.url}" username="${manager.username}" password="${manager.password}" path="/${app.name}"/>
+  </target>
+
+  <target name="redeploy" depends="undeploy,deploy"/>
+
+</project>
