@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -46,6 +47,7 @@ public class UtilityFunctions {
 			}		
 			URL url = new URL(location);
 			URLConnection conn = url.openConnection ();
+			conn.setConnectTimeout(30000);
 		    conn.setDoOutput(true);
 		    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 		    wr.write(data);
@@ -60,6 +62,8 @@ public class UtilityFunctions {
 	        is.setCharacterStream(new StringReader(sb.toString()));
 	        Document doc = db.parse(is);
 			return doc;
+		} catch ( SocketTimeoutException e ) {
+			return httpPost(location, params);
 		} catch ( Exception e ) {
 			return null;
 		}
@@ -69,6 +73,7 @@ public class UtilityFunctions {
 		try {
 			URL url = new URL(location);
 			URLConnection conn = url.openConnection ();
+			conn.setConnectTimeout(30000);
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			StringBuffer sb = new StringBuffer();
 			String line;
@@ -81,6 +86,8 @@ public class UtilityFunctions {
 	        is.setCharacterStream(new StringReader(sb.toString()));
 	        Document doc = db.parse(is);
 			return doc;
+		} catch ( SocketTimeoutException e ) {
+			return httpGet(location);	
 		} catch ( Exception e ) {
 			return null;
 		}
@@ -90,6 +97,7 @@ public class UtilityFunctions {
 		try {
 			URL url = new URL(location);
 			URLConnection conn = url.openConnection ();
+			conn.setConnectTimeout(30000);
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			StringBuffer sb = new StringBuffer();
 			String line;
@@ -100,6 +108,8 @@ public class UtilityFunctions {
 	        is.setCharacterStream(new StringReader(sb.toString()));
 	        db.parse(is);
 	        return db.getDocument();
+		} catch ( SocketTimeoutException e ) {
+			return htmldoc(location);	
 		} catch ( Exception e ) {
 			return null;
 		}
