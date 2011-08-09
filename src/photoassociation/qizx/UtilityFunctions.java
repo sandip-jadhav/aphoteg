@@ -10,6 +10,11 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -113,6 +118,47 @@ public class UtilityFunctions {
 		} catch ( Exception e ) {
 			return null;
 		}
+	}
+	
+	public static double cossineSimilarity(Object vocabulario, String doc, String query){
+		int numDocs = 950;
+		
+		Map<String,Integer> vocabulary = (Map<String,Integer>) vocabulario;
+		
+		TreeMap<String, Double> vectorDoc = new TreeMap<String, Double>();
+		TreeMap<String, Double> vectorQuery = new TreeMap<String, Double>();
+		
+		List<String> listDoc = Arrays.asList(parser(doc));
+		List<String> listQuery = Arrays.asList(parser(query));
+		
+		// Apenas Docs sem stopwords
+		for(String term : listDoc) {
+			double valDoc, valQuery;
+			if(containsIgnoreCase(listDoc,term)){
+				double tf = getTF(doc,term);
+				double idf = getIDF(vocabulary, term, numDocs);
+				valDoc = tf * idf;
+			} else{ valDoc = 0.00;}
+			vectorDoc.put(term, valDoc);
+			if(containsIgnoreCase(listQuery,term)){
+				double tf = getTF(doc,term);
+				double idf = getIDF(vocabulary, term, numDocs);
+				valQuery = tf * idf;
+			} else{ valQuery = 0.00;}
+			vectorQuery.put(term,valQuery);
+		}
+
+		double dotProd = 0.00;
+		double NormDoc = 0.00;
+		double NormQuery = 0.00;
+		int i;
+		for(i = 0 ; i < vectorDoc.size() ; i++){
+			dotProd += ((Double)vectorDoc.values().toArray()[i] * (Double)vectorQuery.values().toArray()[i]);
+			NormDoc += Math.sqrt(Math.pow((Double)vectorDoc.values().toArray()[i], 2));
+			NormQuery += Math.sqrt(Math.pow((Double)vectorQuery.values().toArray()[i], 2));
+		}
+		Double result = dotProd / (NormDoc * NormQuery);
+		if( result.isNaN()) return 0.0; else return result;
 	}
 
 }
