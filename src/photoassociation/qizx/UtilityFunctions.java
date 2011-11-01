@@ -445,13 +445,26 @@ public class UtilityFunctions {
 
   // Alterar para o ficheiro SentiWordNet_3.0.0_20100908.txt 
    public static double textualPolarity(String text){
-
-		String path = "C:\\qizx\\bin\\Testes\\Common\\";
+		//String path = "C:\\qizx\\bin\\Testes\\Common\\";
 		try{
-		SentimentalPolarity pol = new SentimentalPolarity(new FileReader(path + "SentiWordNet_3.0.0_20100908.txt"));
+		//SentimentalPolarity pol = new SentimentalPolarity(new FileReader(path + "SentiWordNet_3.0.0_20100908.txt"));
+    SentimentalPolarity pol = new SentimentalPolarity(new FileReader("SentiWordNet_3.0.0_20100908.txt"));
 		return pol.textPolarity(text);
 		}catch(Exception e){System.out.println("Erro a calcular a polaridade do texto " + e.getLocalizedMessage());}
 		return Double.NaN;
 	}
 
+  public static double imagePolarity(String linkImage){
+	  try{
+			Image image = java.awt.Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(new URL(linkImage));
+		return NaiveSimilarityFinder.imageWarmth(image);
+		}catch(Exception e){System.out.println("Erro a calcular a polaridade da imagem " + e.getLocalizedMessage());}
+		return Double.NaN;
+	}
+
+  public static double getVincentysDistance( double lat1, double lon1, double lat2, double lon2 ){
+		VincentyDistanceCalculator dist = new VincentyDistanceCalculator();
+		double val = dist.getDistance(lat1, lon1, lat2, lon2);
+		return val;
+	}
 }
