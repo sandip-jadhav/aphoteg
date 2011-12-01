@@ -1,0 +1,153 @@
+<project name="XQuery for Spatio-Temporal Data" default="compile" basedir=".">
+
+  <property name="app.name" value="aphoteg"/>
+  <property name="manager.url" value="http://localhost:8080/manager/" />
+  <property name="manager.username" value="admin"/>
+  <property name="manager.password" value="admin"/>
+  <property name="appengine.username" value="bgmartins@gmail.com"/>
+  <property name="appengine.sdk.dir" location="/home/bmartins/.eclipse/org.eclipse.platform_3.5.0_155965261/plugins/com.google.appengine.eclipse.sdkbundle_1.5.2.r35v201107211953/appengine-java-sdk-1.5.2" />
+
+  <path id="classpath.standard">
+    <pathelement location="/usr/share/java/commons-fileupload.jar"/>
+    <pathelement location="/usr/share/java/commons-io.jar" />
+    <pathelement location="/usr/share/java/commons-lang.jar" />
+    <pathelement location="/usr/share/java/servlet-api.jar" />
+    <pathelement location="/usr/share/java/xml-apis.jar" />
+    <pathelement location="/usr/share/java/resolver.jar" />
+    <pathelement location="/usr/share/java/xercesImpl.jar" />
+    <pathelement location="/usr/share/java/jtsio.jar" />
+    <pathelement location="/usr/share/java/jts.jar" />
+    <pathelement location="/usr/share/java/qizx.jar" />
+    <pathelement location="/usr/share/java/xqdoc_conv.jar" />
+    <pathelement location="/usr/share/java/saxonb-8.9.jar" />
+    <pathelement location="/usr/share/java/antlr.jar" />
+    <pathelement location="/usr/share/java/jaxp-1.3.jar" />
+    <pathelement location="/usr/share/java/tagsoup.jar" />
+    <pathelement location="/usr/share/java/gml-v_3_1_1-schema-1.0.2.jar" />
+    <pathelement location="/usr/share/java/ogc-tools-gml-jts-1.0.2.jar" />
+
+    <pathelement location="bin"/>
+    <fileset dir="${appengine.sdk.dir}/lib"><include name="shared/**/*.jar" /></fileset>
+	<pathelement location="${appengine.sdk.dir}/lib/appengine-tools-api.jar" />
+   </path>
+
+  <target name="clean">
+	<delete file="${app.name}.jar"/>
+    <delete file="${app.name}.war"/>
+  	<delete dir="war"/>
+    <delete dir="bin"/>
+    <mkdir dir="bin"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="bin"/>
+    <javac includeAntRuntime="false" srcdir="src" destdir="bin" debug="yes" deprecation="yes" optimize="yes">
+      <compilerarg value="-Xlint:all"/>
+      <classpath refid="classpath.standard"/>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${app.name}.jar">
+	  <fileset dir="src" includes="**/*"/>
+      <fileset dir="bin" includes="**/*.class"/>
+    </jar>
+  </target>
+
+  <target name="war" depends="jar">
+    <mkdir dir="war"/>
+    <copy todir="war"><fileset dir="webapp"/></copy>
+    <mkdir dir="war/WEB-INF/lib"/>
+    <mkdir dir="war/WEB-INF/classes"/>
+    <mkdir dir="war/WEB-INF/classes/META-INF"/>
+    <copy todir="war/WEB-INF/classes/META-INF" file="webapp/WEB-INF/jdoconfig.xml" />
+  	<copy todir="war/WEB-INF/classes">
+  	 <fileset dir="src" includes="**/*"/>
+	 <fileset dir="bin" includes="**/*"/>
+        </copy>
+    <copy todir="war/WEB-INF/lib">
+      <fileset file="${app.name}.jar"/>
+      <fileset file="/usr/share/java/commons-fileupload.jar"/>
+      <fileset file="/usr/share/java/commons-io.jar"/>
+      <fileset file="/usr/share/java/commons-lang.jar"/>
+      <fileset file="/usr/share/java/xml-apis.jar"/>
+      <fileset file="/usr/share/java/resolver.jar"/>
+      <fileset file="/usr/share/java/xercesImpl.jar"/>
+      <fileset file="/usr/share/java/jtsio.jar"/>
+      <fileset file="/usr/share/java/jts.jar"/>
+      <fileset file="/usr/share/java/qizx.jar"/>
+      <fileset file="/usr/share/java/xqdoc_conv.jar"/>
+      <fileset file="/usr/share/java/saxonb-8.9.jar" />
+      <fileset file="/usr/share/java/antlr.jar" />
+      <fileset file="/usr/share/java/jaxp-1.3.jar"/>
+      <fileset file="/usr/share/java/tagsoup.jar" />
+      <fileset file="/usr/share/java/gml-v_3_1_1-schema-1.0.2.jar" />
+      <fileset file="/usr/share/java/ogc-tools-gml-jts-1.0.2.jar" />
+    </copy>
+    <jar destfile="${app.name}.war">
+      <fileset dir="war"/>
+    </jar>
+    <delete file="${app.name}.jar"/>
+  </target>
+
+  <target name="deploy" depends="war">
+    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
+        <classpath>
+           <pathelement location="/usr/share/java/catalina-ant.jar"/>
+        </classpath>
+    </taskdef>
+    <deploy url="${manager.url}" 
+            username="${manager.username}" 
+            password="${manager.password}" 
+            path="/${app.name}" 
+            war="${app.name}.war"/>
+	<delete file="${app.name}.war"/>
+  </target>
+
+  <target name="undeploy">
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+        <classpath>
+           <pathelement location="/usr/share/java/catalina-ant.jar"/>
+        </classpath>
+    </taskdef>
+    <undeploy url="${manager.url}" username="${manager.username}" password="${manager.password}" path="/${app.name}"/>
+  </target>
+
+  <target name="redeploy" depends="undeploy,deploy"/>
+  
+  <import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />
+
+  <target name="datanucleusenhance" depends="war" description="Performs JDO enhancement on compiled data classes.">
+		    <enhance_war war="war" />
+  </target>
+
+  <target name="runserver" depends="datanucleusenhance" description="Starts the development server.">
+		    <dev_appserver war="war" port="8888" />
+  </target>
+
+  <target name="update" depends="datanucleusenhance" description="Uploads the application to App Engine.">
+		<java classname="com.google.appengine.tools.admin.AppCfg">
+	  	<sysproperty key="appengine.sdk.root" value="${appengine.sdk.dir}" />
+	        <classpath refid="classpath.standard"/>
+	  	    <arg value="--email=${appengine.username}" />
+	  	    <arg value="update" />
+	  	    <arg value="war" />
+	  	 </java>	
+  </target>
+
+  <target name="update_indexes" depends="datanucleusenhance" description="Uploads just the datastore index configuration to App Engine.">
+		    <appcfg action="update_indexes" war="war" />
+  </target>
+
+  <target name="rollback" depends="datanucleusenhance" description="Rolls back an interrupted application update.">
+	     <appcfg action="rollback" war="war" />
+  </target>
+
+  <target name="request_logs" description="Downloads log data from App Engine for the application.">
+		    <appcfg action="request_logs" war="war">
+		      <options><arg value="--num_days=5"/></options>
+		      <args><arg value="logs.txt"/></args>
+		    </appcfg>
+  </target>
+  
+</project>
