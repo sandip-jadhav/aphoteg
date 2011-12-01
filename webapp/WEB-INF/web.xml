@@ -9,11 +9,26 @@
   <servlet-name>XQueryServlet</servlet-name>
   <servlet-class>photoassociation.XQueryServlet</servlet-class>
  </servlet>
+ 
  <servlet-mapping>
   <servlet-name>XQueryServlet</servlet-name>
   <url-pattern>/photoassociation/*</url-pattern>
  </servlet-mapping>
 
+  <filter>
+    <filter-name>xsltFilter</filter-name>
+    <filter-class>photoassociation.StylesheetFilter</filter-class>
+    <init-param>
+      <param-name>xsltPath</param-name>
+      <param-value>/xml2html.xsl</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>xsltFilter</filter-name>
+    <url-pattern>/photoassociation/*</url-pattern>
+  </filter-mapping>
+  
  <welcome-file-list>
   <welcome-file>index.html</welcome-file>
  </welcome-file-list>

@@ -33,7 +33,7 @@
 
   <target name="compile">
     <mkdir dir="bin"/>
-    <javac includeAntRuntime="false" srcdir="src" destdir="bin" debug="yes" deprecation="yes" optimize="yes">
+    <javac encoding="UTF-8" includeAntRuntime="false" srcdir="src" destdir="bin" debug="yes" deprecation="yes" optimize="yes">
       <compilerarg value="-Xlint:all"/>
       <classpath refid="classpath.standard"/>
     </javac>
