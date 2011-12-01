@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app>
+
+ <display-name>Associating Photos to Text Through Geography</display-name>
+ <description>Associating Photos to Text Through Geography</description>
+
+ <servlet>
+  <servlet-name>XQueryServlet</servlet-name>
+  <servlet-class>XQueryServlet</servlet-class>
+ </servlet>
+ <servlet-mapping>
+  <servlet-name>XQueryServlet</servlet-name>
+  <url-pattern>/photoassociation/*</url-pattern>
+ </servlet-mapping>
+
+ <welcome-file-list>
+  <welcome-file>index.html</welcome-file>
+ </welcome-file-list>
+
+</web-app>
