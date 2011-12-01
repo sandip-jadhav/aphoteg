@@ -2,7 +2,7 @@ package com.aliasi.sentences;
 
 import java.io.*;
 import java.util.*;
-import org.tartarus.snowball.ext.PorterStemmer;
+//TODO: import org.tartarus.snowball.ext.PorterStemmer;
 
 /**
  * An implementation of Marti Hearst's text tiling algorithm.
@@ -347,7 +347,7 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 	 * Perform some preprocessing to save execution time
 	 */
 	protected void preprocess() {
-		PorterStemmer stemmer = new PorterStemmer();
+		//TODO: PorterStemmer stemmer = new PorterStemmer();
 		Vector<String> text = C.text; // Text of the collection
 		String token; // A token
 		/* Construct a dictionary of tokens */
@@ -358,9 +358,9 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		/* Complete mapping token -> stem */
 		for (Enumeration<String> e = stemOf.keys(); e.hasMoreElements();) {
 			token = e.nextElement();
-			stemmer.setCurrent(token);
-			stemmer.stem();
-			stemOf.put(token, stemmer.getCurrent());
+			//TODO: stemmer.setCurrent(token);
+			//TODO: stemmer.stem();
+			//TODO: stemOf.put(token, stemmer.getCurrent());
 		}
 	}
 

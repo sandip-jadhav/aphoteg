@@ -36,7 +36,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,26 +44,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
-import org.apache.commons.math.linear.RealMatrix;
-import org.apache.commons.math.stat.correlation.Covariance;
 import org.cyberneko.html.parsers.DOMParser;
-
-import kim.bin.stats.mve.MVEWrap;
-import kim.stats.mve.MVE;
-
 import photoassociation.qizx.LDADocumentRepresentation.NonAlphaStopTokenizerFactory;
 import photoassociation.qizx.LDADocumentRepresentation.StemTokenizerFactory;
-
-import weka.core.matrix.Matrix;
-
 import com.aliasi.cluster.LatentDirichletAllocation;
 import com.aliasi.tokenizer.EnglishStopTokenizerFactory;
 import com.aliasi.tokenizer.LowerCaseTokenizerFactory;
@@ -256,8 +244,8 @@ public class UtilityFunctions {
 		
 		Map<String,Integer> vocabulary = new HashMap<String,Integer>();
 		
-		// A StopWords List está toda em lowercase. 
-		// O IDF apenas se preocupa se um termo existe num documento ou não (não importa o numero de vezes) 
+		// A StopWords List estÃ¡ toda em lowercase. 
+		// O IDF apenas se preocupa se um termo existe num documento ou nÃ£o (nÃ£o importa o numero de vezes) 
 		for(i=0; i<numDocs; i++){
 			String doc = collection[i];
 			String[] palavras = parser(doc);
@@ -378,13 +366,13 @@ public class UtilityFunctions {
 	
 	public static int votingBorda(int length, int position){
 		
-		// Para m pontos : Usando a regra de Borda -> 1º m-1 ; 2º m-2
+		// Para m pontos : Usando a regra de Borda -> 1Âº m-1 ; 2Âº m-2
 		int pontos = length-position-1;
 		return pontos;
 	}
 	
 	public static int votingVeto(int length, int position){
-		// (length-1) porque começa em 0 
+		// (length-1) porque comeÃ§a em 0 
 		if(position != (length - 1)){
 			return 1;
 		}
@@ -422,7 +410,7 @@ public class UtilityFunctions {
 		for (k=0; k < vectType.length; k++){
 
 			String tipoOrdenacao = vectType[k];
-			// Caso o atributo seja o ID da foto ou uma pontuacao, não faz nada
+			// Caso o atributo seja o ID da foto ou uma pontuacao, nÃ£o faz nada
 			if(tipoOrdenacao.equalsIgnoreCase("id") || tipoOrdenacao.contains("pontuacao") ){}
 			else
 			{
@@ -463,7 +451,7 @@ public class UtilityFunctions {
 					map.put(key, fotos.item(i));
 				}
 
-				//Depois insiro a pontuação
+				//Depois insiro a pontuaÃ§Ã£o
 				int j;
 				for( j=0; j<map.values().size(); j++)
 				{
@@ -578,7 +566,7 @@ public class UtilityFunctions {
 			allSets.put(atributo, set);
 		}
 		
-		// Já temos todas as features com a ordenadas correctamente
+		// JÃ¡ temos todas as features com a ordenadas correctamente
 		for(indiceFoto=0; indiceFoto<fotos.getLength(); indiceFoto++){
 
 			Element foto = (Element) fotos.item(indiceFoto);
@@ -604,7 +592,7 @@ public class UtilityFunctions {
 				pontosTotais += pontos;
 			}
 			
-			//Adicionar o atributo à foto
+			//Adicionar o atributo Ã  foto
 			if(combMNZ){pontosTotais = pontosTotais*numNonZeros;}
 			foto.setAttribute("pontuacaoTotal", pontosTotais.toString());
 		}
@@ -664,101 +652,6 @@ public class UtilityFunctions {
 		return vectResults;
 	}
 		
-	public static double[][] multiply(double[][] m1, double[][] m2) {
-	    int m1rows = m1.length;
-	    int m1cols = m1[0].length;
-	    int m2rows = m2.length;
-	    int m2cols = m2[0].length;
-	    if (m1cols != m2rows)
-	      throw new IllegalArgumentException("matrices don't match: " + m1cols + " != " + m2rows);
-	    double[][] result = new double[m1rows][m2cols];
-
-	    // multiply
-	    for (int i=0; i<m1rows; i++)
-	      for (int j=0; j<m2cols; j++)
-	        for (int k=0; k<m1cols; k++)
-	        result[i][j] += m1[i][k] * m2[k][j];
-
-	    return result;
-	  }
-		
-	public static double[] mahalanobisDistance(Node coordinates){
-		
-		Element element = (Element) coordinates;
-		NodeList places =  element.getElementsByTagName("place");
-		
-		int numPlaces = places.getLength();
-		
-		//Apenas 2 colunas - Coordenadas (x,y)
-		Matrix matrix = new Matrix(numPlaces, 2);
-		
-		double meanValueLatitude=0;
-		double meanValueLongitude=0;
-		int x,y;
-		for(x=0; x < numPlaces; x++){
-			Element place = (Element)places.item(x);
-			Double latitude = Double.valueOf(place.getElementsByTagName("latitude").item(0).getTextContent());
-			meanValueLatitude += latitude;
-			Double longitude = Double.valueOf(place.getElementsByTagName("longitude").item(0).getTextContent());
-			meanValueLongitude += longitude;
-			for(y=0; y < 2; y++){
-				if(y==0){matrix.set(x, y, longitude);}
-				if(y==1){matrix.set(x, y, latitude);}
-			}
-		}
-		
-		meanValueLatitude = (meanValueLatitude/numPlaces);
-		meanValueLongitude = (meanValueLongitude/numPlaces);
-		commonSense.math.linear.Matrix mat = new commonSense.math.linear.Matrix(matrix.getArrayCopy());
-
-		System.out.println(mat.toString());
-		
-		MVEWrap mveW = new MVEWrap(mat);
-		
-		System.out.println(mveW);
-		/*
-		//System.out.println("Mariz Inicial : \n" + matrix);
-		Covariance cov = new Covariance(matrix.getArrayCopy());
-		//System.out.println("Cov: \n" + new Matrix(cov.getCovarianceMatrix().getData()));
-		Matrix invCovMatrix = new Matrix(cov.getCovarianceMatrix().getData()).inverse();
-		
-		
-		System.out.println("MeanLatitude : " + meanValueLatitude);
-		System.out.println("MeanLongitude : " + meanValueLongitude);;
-		System.out.println("Mariz Inversa Covariancia : \n" + invCovMatrix);
-		 
-		
-		//Valor para a distribuição Chi-quadrado , com probabilidade 0.5 e 2 graus de liberdade
-		//double limitValue = 1.3862;
-		double limitValue = 0.0506;
-		
-		// 4 graus de liberdade -> P = 0.025 -> 11.143
-		// 2 graus de liberdade -> P = 0.025 -> 7.378 
-		//System.out.println("Teste1 : " + Math.sqrt(7.378));
-		//System.out.println("Teste2 : " + Math.sqrt(11.143));
-		
-		double[] squaredMahalanobisDistance = new double[numPlaces];
-		int i;
-		Matrix row = null; 
-		for(i=0; i<numPlaces;i++){
-			row = matrix.getMatrix(i,i,0,matrix.getColumnDimension()-1);
-			row.set(0, 0, (row.get(0, 0) - meanValueLongitude));
-			row.set(0, 1, (row.get(0, 1) - meanValueLatitude));
-			//double val = (multiply(multiply(row.getArrayCopy(),invCovMatrix.getArrayCopy()),row.transpose().getArrayCopy())[0])[0];
-			double val = Math.sqrt((multiply(multiply(row.getArrayCopy(),invCovMatrix.getArrayCopy()),row.transpose().getArrayCopy())[0])[0]);
-			System.out.println("Dist " + val);
-			if(val <= limitValue) squaredMahalanobisDistance[i] = 1;
-			else squaredMahalanobisDistance[i]= 0;
-			
-			boolean resp;
-			if(squaredMahalanobisDistance[i]==1) resp = false; else resp=true;
-			System.out.println(" Ponto - mean : " + row +  " é outlier ? " + resp + "\n");
-			
-		}*/
-		double[] vect = {0.01, 0.3};
-		return vect;
-		
-	}
 	
 	public static double textualPolarity(String text){
 
@@ -837,7 +730,7 @@ public class UtilityFunctions {
 				}
 			}
 			return ImageCluster;
-		}catch(Exception e){System.out.println("Erro na criação de clusters " + e.getLocalizedMessage());}
+		}catch(Exception e){System.out.println("Erro na criaÃ§Ã£o de clusters " + e.getLocalizedMessage());}
 		return null;
 	}
 	
@@ -897,7 +790,7 @@ public class UtilityFunctions {
 				}
 			}
 			return newImageClusters;
-		}catch(Exception e){System.out.println("Deu erro na criação de clusters " + e.getLocalizedMessage());}
+		}catch(Exception e){System.out.println("Deu erro na criaÃ§Ã£o de clusters " + e.getLocalizedMessage());}
 		return null;
 	}
 	
@@ -907,4 +800,6 @@ public class UtilityFunctions {
 		return val;
 	}
 	
+	public static void main(String[] argv) {
+	}
 }

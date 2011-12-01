@@ -1,4 +1,4 @@
-package photoassociation;
+package photoassociation.qizx;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -16,6 +16,7 @@ import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -51,6 +52,16 @@ public class NaiveSimilarityFinder extends JFrame {
   private static final int baseSize = 300;
 
   private static final String basePath = "/home/rafael/Pesquisa/ImageSimilarity";
+  
+  public static double imageWarmth ( Image i1 ) {
+	  Raster img1 = rescale(toBufferedImage(i1)).getData();
+	  double diff = 0, sum = 0;
+      for (int x = 0; x < img1.getWidth(); x++) for (int y = 0; y < img1.getHeight(); y++) {
+    	    diff += img1.getSampleDouble(x,y,0) - img1.getSampleDouble(x,y,2);
+	        sum += 255;
+	  }
+	  return diff / sum;
+  }
 
   public static double imageDistance ( Image i1, Image i2 ) {
 	  BufferedImage img1 = toBufferedImage(i1);

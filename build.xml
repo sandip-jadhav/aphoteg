@@ -5,28 +5,20 @@
   <property name="manager.username" value="admin"/>
   <property name="manager.password" value="admin"/>
   <property name="appengine.username" value="bgmartins@gmail.com"/>
-  <property name="appengine.sdk.dir" location="/home/bmartins/.eclipse/org.eclipse.platform_3.5.0_155965261/plugins/com.google.appengine.eclipse.sdkbundle_1.5.2.r35v201107211953/appengine-java-sdk-1.5.2" />
+  <property name="appengine.sdk.dir" location="/Users/Rui Candeias/Desktop/eclipse/plugins/com.google.appengine.eclipse.sdkbundle_1.5.5.r36v201110112027/appengine-java-sdk-1.5.5" />
 
   <path id="classpath.standard">
-    <pathelement location="/usr/share/java/commons-fileupload.jar"/>
-    <pathelement location="/usr/share/java/commons-io.jar" />
-    <pathelement location="/usr/share/java/commons-lang.jar" />
-    <pathelement location="/usr/share/java/servlet-api.jar" />
-    <pathelement location="/usr/share/java/xml-apis.jar" />
-    <pathelement location="/usr/share/java/resolver.jar" />
-    <pathelement location="/usr/share/java/xercesImpl.jar" />
-    <pathelement location="/usr/share/java/jtsio.jar" />
-    <pathelement location="/usr/share/java/jts.jar" />
-    <pathelement location="/usr/share/java/qizx.jar" />
-    <pathelement location="/usr/share/java/xqdoc_conv.jar" />
-    <pathelement location="/usr/share/java/saxonb-8.9.jar" />
-    <pathelement location="/usr/share/java/antlr.jar" />
-    <pathelement location="/usr/share/java/jaxp-1.3.jar" />
-    <pathelement location="/usr/share/java/tagsoup.jar" />
-    <pathelement location="/usr/share/java/gml-v_3_1_1-schema-1.0.2.jar" />
-    <pathelement location="/usr/share/java/ogc-tools-gml-jts-1.0.2.jar" />
-
-    <pathelement location="bin"/>
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/servlet-api.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/xml-apis.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/resolver.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/xercesImpl.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/qizx.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/tagsoup-1.2.1.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/RankLib.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/lingpipe-4.0.1.jar" />
+  	<pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/jai_core-1.1.3.jar" />
+    <pathelement location="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/nekohtml.jar" />
+  	<pathelement location="bin"/>
     <fileset dir="${appengine.sdk.dir}/lib"><include name="shared/**/*.jar" /></fileset>
 	<pathelement location="${appengine.sdk.dir}/lib/appengine-tools-api.jar" />
    </path>
@@ -64,25 +56,19 @@
   	<copy todir="war/WEB-INF/classes">
   	 <fileset dir="src" includes="**/*"/>
 	 <fileset dir="bin" includes="**/*"/>
-        </copy>
+    </copy>
     <copy todir="war/WEB-INF/lib">
       <fileset file="${app.name}.jar"/>
-      <fileset file="/usr/share/java/commons-fileupload.jar"/>
-      <fileset file="/usr/share/java/commons-io.jar"/>
-      <fileset file="/usr/share/java/commons-lang.jar"/>
-      <fileset file="/usr/share/java/xml-apis.jar"/>
-      <fileset file="/usr/share/java/resolver.jar"/>
-      <fileset file="/usr/share/java/xercesImpl.jar"/>
-      <fileset file="/usr/share/java/jtsio.jar"/>
-      <fileset file="/usr/share/java/jts.jar"/>
-      <fileset file="/usr/share/java/qizx.jar"/>
-      <fileset file="/usr/share/java/xqdoc_conv.jar"/>
-      <fileset file="/usr/share/java/saxonb-8.9.jar" />
-      <fileset file="/usr/share/java/antlr.jar" />
-      <fileset file="/usr/share/java/jaxp-1.3.jar"/>
-      <fileset file="/usr/share/java/tagsoup.jar" />
-      <fileset file="/usr/share/java/gml-v_3_1_1-schema-1.0.2.jar" />
-      <fileset file="/usr/share/java/ogc-tools-gml-jts-1.0.2.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/servlet-api.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/xml-apis.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/resolver.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/xercesImpl.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/qizx.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/tagsoup-1.2.1.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/RankLib.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/lingpipe-4.0.1.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/jai_core-1.1.3.jar" />
+      <fileset file="/Users/Rui Candeias/workspace/Tese/Photoassociation/war/WEB-INF/lib/nekohtml.jar" />
     </copy>
     <jar destfile="${app.name}.war">
       <fileset dir="war"/>
@@ -127,7 +113,7 @@
 
   <target name="update" depends="datanucleusenhance" description="Uploads the application to App Engine.">
 		<java classname="com.google.appengine.tools.admin.AppCfg">
-	  	<sysproperty key="appengine.sdk.root" value="${appengine.sdk.dir}" />
+	  	    <sysproperty key="appengine.sdk.root" value="${appengine.sdk.dir}" />
 	        <classpath refid="classpath.standard"/>
 	  	    <arg value="--email=${appengine.username}" />
 	  	    <arg value="update" />

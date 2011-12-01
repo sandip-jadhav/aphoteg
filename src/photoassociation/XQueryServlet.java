@@ -52,14 +52,24 @@ public class XQueryServlet extends HttpServlet {
 		String text = httpservletrequest.getParameter("text");
 		try {
 			Configuration.set(Configuration.ALLOWED_CLASSES, 
+					"java.io.StringReader," +
+					"java.io.StringWriter," +
+					"java.io.Reader," +
+					"java.net.URL," +
+					"java.util.Map," +
+					"java.util.List," +
 					"java.util.HashMap," +
 					"java.lang.String," +
 	 		 		"photoassociation.qizx.UtilityFunctions,"+
 	 		 		"java.lang.Math");
-			manager = Configuration.createSessionManager("localhost:8888/");			
+			
+            manager = Configuration.createSessionManager("http://aphoteg.googlecode.com/hg/src/xquery/");
 			manager.setModuleResolver(new MyModuleResolver());
-			session = manager.createSession();			
-		    BufferedReader input = new BufferedReader(new InputStreamReader(this.getServletContext().getResourceAsStream("WEB-INF/src/xquery/xquery2compile.xq")));
+			session = manager.createSession();
+			session.getContext().declarePrefix("flickr", "http://www.flickr.com/services/api/");
+			session.getContext().declarePrefix("geoplanet", "http://developer.yahoo.com/geo/");
+			session.getContext().declarePrefix("photoAssociation", "http://web.tagus.ist.utl.pt/~rui.candeias/"); 			
+		    BufferedReader input = new BufferedReader(new InputStreamReader(this.getServletContext().getResourceAsStream("/WEB-INF/classes/xquery/xquery2compile.xq")));
 			String line = null;
 			StringBuffer sBuffer = new StringBuffer();
 		    while ( (line = input.readLine()) != null ) { sBuffer.append(line); sBuffer.append("\n"); }
@@ -102,6 +112,14 @@ public class XQueryServlet extends HttpServlet {
 			}
 		} catch (Exception ex) {
 			out.println("<results>\n <error>");
+			if ( ex instanceof com.qizx.api.CompilationException) {
+				for ( com.qizx.api.Message m : ((com.qizx.api.CompilationException)ex).getMessages() ) {
+					out.println(m.getLineNumber() + ":" + m.getColumnNumber() + " -> " + m.getText());
+					out.println();
+					out.flush();
+				}
+			}
+
 			if (session != null && manager != null && manager instanceof LibraryManager) try { 
 				shutdown( (Library)session, (LibraryManager)manager);
 			} catch (Exception e2) { }
@@ -119,16 +137,16 @@ public class XQueryServlet extends HttpServlet {
     class MyModuleResolver extends DefaultModuleResolver {
 	 	
     	public MyModuleResolver ( ) throws MalformedURLException { 
-                      super ( new URL( "http://localhost:8888/" ) ); 
+                      super ( new URL( "http://aphoteg.googlecode.com/hg/src/xquery/" ) ); 
 	 	};
 	 	
 	 	public URL[] resolve (String moduleNamespaceURI, String[] locationHints) throws MalformedURLException {
 	 		if (moduleNamespaceURI.equals("http://www.flickr.com/services/api/")) 
-	 		 	return new URL[]{ new URL("http://localhost:8888/flickr.xqy") };
+	 		 	return new URL[]{ new URL("http://aphoteg.googlecode.com/hg/src/xquery/flickr.xqy") };
 	 		else if (moduleNamespaceURI.equals("http://developer.yahoo.com/geo/")) 
-	 		 	return new URL[]{ new URL("http://localhost:8888/geoplanet.xqy") };
+	 		 	return new URL[]{ new URL("http://aphoteg.googlecode.com/hg/src/xquery/geoplanet.xqy") };
 	 		else if (moduleNamespaceURI.equals("http://web.tagus.ist.utl.pt/~rui.candeias/")) 
-	 		 	return new URL[]{ new URL("http://localhost:8888/photoAssociation.xqy") };
+	 		 	return new URL[]{ new URL("http://aphoteg.googlecode.com/hg/src/xquery/photoAssociation.xqy") };
 	 		else return super.resolve(moduleNamespaceURI,locationHints);
 	 	}
 	}
