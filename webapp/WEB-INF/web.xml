@@ -7,7 +7,7 @@
 
  <servlet>
   <servlet-name>XQueryServlet</servlet-name>
-  <servlet-class>XQueryServlet</servlet-class>
+  <servlet-class>photoassociation.XQueryServlet</servlet-class>
  </servlet>
  <servlet-mapping>
   <servlet-name>XQueryServlet</servlet-name>

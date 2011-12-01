@@ -1,8 +1,8 @@
-import module namespace flickr="http://www.flickr.com/services/api/" at "flickr.xqy";
-import module namespace geoplanet="http://developer.yahoo.com/geo/" at "geoplanet.xqy";
-import module namespace photoAssociation="http://web.tagus.ist.utl.pt/~rui.candeias/" at "photoAssociation.xqy";
-
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
+
+import module "http://www.flickr.com/services/api/";
+import module "http://developer.yahoo.com/geo/";
+import module "http://web.tagus.ist.utl.pt/~rui.candeias/";
 
 declare namespace x = "http://www.w3.org/1999/xhtml";
 declare namespace xmls = "http://wherein.yahooapis.com/v1/schema";
