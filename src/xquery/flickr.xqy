@@ -6,8 +6,16 @@ declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
 declare namespace utils = "java:photoassociation.qizx.UtilityFunctions";
 
+(: Antes
 declare variable $flickr:key    := "bf5e51500f8f17b9bd8fded4fb8c526d";
 declare variable $flickr:secret := "96400c714f738028";
+:)
+(:Depois
+declare variable $flickr:key    := "3c869a048bfa5bb9a7f68d18ed685000";
+declare variable $flickr:secret := "c1917f6c695d12e9";
+:)
+declare variable $flickr:key    := "3c869a048bfa5bb9a7f68d18ed685000";
+declare variable $flickr:secret := "c1917f6c695d12e9";
 declare variable $flickr:token  := "YOUR AUTH_TOKEN";
 
 declare function flickr:_md5 ( $arg as xs:string ) {
@@ -1005,6 +1013,11 @@ declare function flickr:photos.search(
     $tags as xs:string?,
     $tag_mode as xs:string?,
     $text as xs:string?,
+    $woe_id as xs:string?,
+    $lat as xs:decimal?,
+    $lon as xs:decimal?,
+    $radius as xs:integer?,
+    $in_gallery as xs:boolean?,
     $min_upload_date as xs:string?,
     $max_upload_date as xs:string?,
     $min_taken_date as xs:string?,
@@ -1020,13 +1033,10 @@ declare function flickr:photos.search(
     $extras as xs:string?,
     $per_page as xs:integer?,
     $page as xs:integer?)
+	
 {
-  let $has_geo := "true"
   let $method := <method xmlns="http://www.flickr.com/services/api/"
                          name="flickr.photos.search">
-                   { if (empty($has_geo))
-                     then ()
-                       else <arg name="has_geo">{$has_geo}</arg> }
                    { if (empty($user_id))
                      then ()
                        else <arg name="user_id">{$user_id}</arg> }
@@ -1039,6 +1049,21 @@ declare function flickr:photos.search(
                    { if (empty($text))
                      then ()
                        else <arg name="text">{$text}</arg> }
+				   { if (empty($woe_id))
+                     then ()
+                       else <arg name="woe_id">{$woe_id}</arg> }
+				   { if (empty($lat))
+                     then ()
+                       else <arg name="lat">{$lat}</arg> }
+				   { if (empty($lon))
+                     then ()
+                       else <arg name="lon">{$lon}</arg> }
+				   { if (empty($radius))
+                     then ()
+                       else <arg name="radius">{$radius}</arg> }
+				   { if (empty($in_gallery))
+                     then ()
+                       else <arg name="in_gallery">{$in_gallery}</arg> }
                    { if (empty($min_upload_date))
                      then ()
                        else <arg name="min_upload_date">{$min_upload_date}</arg> }
@@ -1612,6 +1637,23 @@ declare function flickr:photosets.comments.getList(
     flickr:_flickr($method)
 };
 
+declare function flickr:places.getInfo(
+	$place_id as xs:string?,
+	$woe_id as xs:string?)
+{
+  let $method := <method xmlns="http://www.flickr.com/services/api/"
+                         name="flickr.places.getInfo">
+				   { if (empty($place_id))
+                     then ()
+                       else <arg name="place_id">{$place_id}</arg> }
+				   { if (empty($woe_id))
+                     then ()
+                       else <arg name="woe_id">{$woe_id}</arg> }
+                 </method>
+  return
+    flickr:_flickr($method)
+};
+
 declare function flickr:reflection.getMethodInfo(
     $method_name as xs:NCName)
 {
@@ -1627,6 +1669,36 @@ declare function flickr:reflection.getMethods()
 {
   let $method := <method xmlns="http://www.flickr.com/services/api/"
                          name="flickr.reflection.getMethods">
+                 </method>
+  return
+    flickr:_flickr($method)
+};
+
+declare function flickr:stats.getPhotoReferrers(
+    $date as xs:string,
+	$domain as xs:string,
+	$place_id as xs:string?,
+	$per_page as xs:integer?,
+	$page as xs:integer?)
+{
+  let $method := <method xmlns="http://www.flickr.com/services/api/"
+                         auth="true"
+                         name="flickr.stats.getPhotoReferrers">
+				   { if (empty($date))
+                     then ()
+                       else <arg name="date">{$date}</arg> }
+				   { if (empty($domain))
+                     then ()
+                       else <arg name="domain">{$domain}</arg> }
+				   { if (empty($place_id))
+                     then ()
+                       else <arg name="place_id">{$place_id}</arg> }
+				   { if (empty($per_page))
+                     then ()
+                       else <arg name="per_page">{$per_page}</arg> }
+				   { if (empty($page))
+                     then ()
+                       else <arg name="page">{$page}</arg> }
                  </method>
   return
     flickr:_flickr($method)
@@ -1805,3 +1877,4 @@ declare function flickr:urls.lookupUser(
   return
     flickr:_flickr($method)
 };
+

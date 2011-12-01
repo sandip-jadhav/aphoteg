@@ -2,8 +2,12 @@ xquery version "1.1";
 
 module namespace photoAssociation = 'http://web.tagus.ist.utl.pt/~rui.candeias/';
 
-import module namespace flickr="http://www.flickr.com/services/api/" at "file:///c:/qizx/bin/flickr.xqy";
+(:import module namespace flickr="http://www.flickr.com/services/api/" at "file:///c:/qizx/bin/flickr.xqy";
 import module namespace geoplanet="http://developer.yahoo.com/geo/" at "file:///c:/qizx/bin/geoplanet.xqy";
+:)
+
+import module namespace flickr="http://www.flickr.com/services/api/" at "flickr.xqy";
+import module namespace geoplanet="http://developer.yahoo.com/geo/" at "geoplanet.xqy";
 
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
@@ -13,7 +17,7 @@ declare namespace math="java:java.lang.Math";
 declare namespace utils = "java:photoassociation.qizx.UtilityFunctions";
 
 (: ************************************************************************************************
-parser - Fun√ß√£o que permite remover o "lixo" do par√°grafo
+parser - FunÁ„o que permite remover o "lixo" do par·grafo
 *************************************************************************************************** :)
 declare function photoAssociation:parserString($text){
 concat(tokenize(normalize-space(replace($text,"<.*>| - |[^a-zA-Z0-9\p{L}]", " ")), " +"), " ")
@@ -182,7 +186,7 @@ return round(xs:double(abs(get-all-seconds($date1 - $date2)) div $time6Meses))
 
 (: ************************************************************************************************
 PLACEMAKER - O geocode_paragraph recebe o nomeDoFicheiro, o numero do paragrafo, e o texto do paragrafo
-caso o paragrafo do ficheiro ainda n√£o tenha sido geocodificado, √© geocodificado usando o Placemaker 
+caso o paragrafo do ficheiro ainda n„o tenha sido geocodificado, È geocodificado usando o Placemaker 
 *************************************************************************************************** :)
 
 declare function photoAssociation:geocode_paragraph($nameFile as xs:string, $paragraph as xs:string)
@@ -245,7 +249,7 @@ return $geo_par
 
 
 (: ************************************************************************************************
-FLICKR - Interface para a escolha do tipo de Selec√ß√£o de fotos (woeid, coordenadas, texto, ou woeid & Coordenadas)
+FLICKR - Interface para a escolha do tipo de SelecÁ„o de fotos (woeid, coordenadas, texto, ou woeid & Coordenadas)
 *************************************************************************************************** :)
 declare function photoAssociation:photos_from_geocode($type as xs:string, $nameFile as xs:string, $numP as xs:integer,$placemaker as node())
 {
@@ -263,7 +267,7 @@ default return "()"
 
 
 (: ************************************************************************************************
-photoCollector - Fun√ß√£o que permite colectar fotos para um determinado local 
+photoCollector - FunÁ„o que permite colectar fotos para um determinado local 
 *************************************************************************************************** :)
 declare function photoAssociation:photoCollector($place)
 {
@@ -306,7 +310,7 @@ return <result>{$photos}</result>
 };
 
 (: ************************************************************************************************
-Selec√ß√£o de fotos usando Woeid's
+SelecÁ„o de fotos usando Woeid's
 *************************************************************************************************** :)
 
 declare function photoAssociation:photos_from_woeid($type as xs:string, $nameFile as xs:string ,$numP as xs:integer, $placemaker as node())
@@ -374,7 +378,7 @@ return $flickrResult
 :)
 
 (: ************************************************************************************************
-Selec√ß√£o de fotos usando Coordenadas
+SelecÁ„o de fotos usando Coordenadas
 *************************************************************************************************** :)
 declare function photoAssociation:photos_from_coordinates($type as xs:string, $nameFile as xs:string , $numP as xs:integer, $placemaker as node())
 {
@@ -418,7 +422,7 @@ catch($err){if (contains($err,"no such collection"))
 };
 
 (: ************************************************************************************************
-Selec√ß√£o de fotos usando Texto
+SelecÁ„o de fotos usando Texto
 *************************************************************************************************** :)
 declare function photoAssociation:photos_from_texto($type as xs:string, $nameFile as xs:string ,$numP as xs:integer, $placemaker as node())
 {
@@ -491,7 +495,7 @@ declare function photoAssociation:photos_selector($textualParagraph, $date, $fli
 		return	<foto>
 			<fotoInfo>{$photo/@*}</fotoInfo>
 			<fotoID>{string($photo/@id)}</fotoID>
-  		<fotoURL>{concat("http://farm",$photo/@farm,".static.flickr.com/",$photo/@server,"/",$photo/@id,"_",$photo/@secret,"_m.jpg")}</fotoURL>
+			<fotoURL>{concat("http://farm",$photo/@farm,".static.flickr.com/",$photo/@server,"/",$photo/@id,"_",$photo/@secret,"_m.jpg")}</fotoURL>
 			<fotoCoords>
 				<placeId>{string($photo//@place_id)}</placeId>
 				<woeid>{string($photo//@woeid)}</woeid>
