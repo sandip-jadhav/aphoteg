@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml" >
+ <head>
+    <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+    <title>Photo Association</title>
+ </head>
+
+ <body style="margin-top:0px; padding-top:0px;">
+
+  <div class="main" align="center">
+      <form id="xquery_form" action="/photoassociation" method="post">
+      <table align="center">
+         <tbody>
+           <td><b>Introduza o Texto</b></td>
+         </tr>
+         <tr height="300">
+            <td>
+            <textarea cols="60" id="text" name="text" rows="20">
+            	Texto a introduzir!!
+            </textarea>
+            </td>
+         </tr>
+         <tr>
+         	<td><b>Introduza a Data</b></td>
+         </tr>
+         <tr>
+            <td>
+            <input id="date" name="date" type="text" size="10" />
+            </td>
+         </tr>
+     	 </tbody>
+      </table>
+     <table align="center">
+         <tbody>
+         <tr>
+           <td>
+            <div class="left-bottom">
+            <td>
+            <input name="Execute" type="submit" value="Execute" />
+            </td>
+            </div>
+          </td>
+         </tr>
+         </tbody>
+     </table>
+     </form>
+   </div>
+  </body>
+</html>
