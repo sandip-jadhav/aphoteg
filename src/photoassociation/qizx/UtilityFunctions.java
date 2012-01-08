@@ -383,7 +383,7 @@ public class UtilityFunctions {
 			result += (idf * ((tf*(k+1)) / (tf + (k * ( 1-b+(b*(vectDoc.length/averageSize))))))); 
 		}
 
-		System.out.println("BM25 : " + result);
+		//System.out.println("BM25 : " + result);
 		if(result.isNaN() || result.isInfinite()) return 0.0; 
 		else return result;
 	}
