@@ -355,6 +355,39 @@ public class UtilityFunctions {
 		if( result.isNaN()) return 0.0; else return result;
 	}
 	
+	public static double getBM25(String[] collection, String doc, String query){
+		double k = 2.0;
+		double b = 0.75;
+		
+		int sizeVocabulary=0, averageSize=0;
+		Set<String> palavrasVocabulario = new HashSet<String>();
+		
+		for (String document : collection ) {
+			String[] vectDocument = parser(document);
+			sizeVocabulary += vectDocument.length;
+			for (String term : vectDocument) palavrasVocabulario.add(term);
+		}
+		averageSize = (sizeVocabulary/collection.length);
+
+		String[] vectDoc = parser(doc);
+		String[] vectQuery = parser(query);
+		Double result = 0.0;
+		
+		for(String queryTerm : vectQuery){
+			//System.out.println("Term : " + queryTerm);
+			double idf = getIDF(collection, queryTerm);
+			//System.out.println("IDF : " + idf);
+			double tf = getTF(doc, queryTerm);
+			//System.out.println("TF : " + tf);
+			
+			result += (idf * ((tf*(k+1)) / (tf + (k * ( 1-b+(b*(vectDoc.length/averageSize))))))); 
+		}
+
+		System.out.println("BM25 : " + result);
+		if(result.isNaN() || result.isInfinite()) return 0.0; 
+		else return result;
+	}
+
 	public static double similarityFunction(double valor){
 		return (1.0 /(1.0 + valor));
 	}
@@ -651,8 +684,7 @@ public class UtilityFunctions {
 		vectResults[2] = simEqualTopic;
 		return vectResults;
 	}
-		
-	
+			
 	public static double textualPolarity(String text){
 
 		String path = "C:\\qizx\\bin\\Testes\\Common\\";
