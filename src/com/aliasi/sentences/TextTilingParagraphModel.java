@@ -26,22 +26,7 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 	}
 
 	public static void main(String[] args) {
-		/* Print header */
-		String header = "";
-		header += "##############################################################\n";
-		header += "# This is JTextTile, a Java implementation of Marti Hearst's #\n";
-		header += "# TextTiling algorithm. Free for educational, research and   #\n";
-		header += "# other non-profit making uses only.                         #\n";
-        header += "#                                                            #\n"; 
-		header += "# Freddy Choi, Artificial Intelligence Group, Department of  #\n";
-		header += "# Computer Science, University of Manchester.                #\n";
-		header += "# Website : http://www.cs.man.ac.uk/~choif                   #\n";
-		header += "# E:mail  : choif@cs.man.ac.uk                               #\n";
-		header += "# Copyright 1999                                             #\n";
-		header += "##############################################################";
-		System.out.println(header);
-		String aux = "";
-		/* Obtain variables */
+		String aux;
 		try {
 			int window;
 			int step;
@@ -72,7 +57,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 				System.err.println(aux);
 				System.exit(1);
 			}
-			/* Lets boogie */
 			System.out.println();
 			String stopwords[] = { "the" , "at" , "on", "a" };
 			TextTilingParagraphModel t = new TextTilingParagraphModel(c, stopwords); // Initialise text tiling algorithm with collection
@@ -92,7 +76,7 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 	}
 
 	protected int w = 100; // Size of the sliding window
-	protected int s = 10; // Step size
+	protected int s = 10;  // Step size
 
 	/* Token -> stem dictionary */
 	protected Hashtable<String,String> stemOf = new Hashtable<String,String>(); // Token -> stem
@@ -110,9 +94,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 	Set<String> S;
 	RawText C;
 	
-	/**
-	 * Segment a collection
-	 */
 	private TextTilingParagraphModel( String text, String[] stopwords ) {
 		C = new RawText(text);
 		S = new HashSet<String>();
@@ -120,9 +101,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		preprocess();
 	}
 
-	/**
-	 * Segment a collection
-	 */
 	private TextTilingParagraphModel( RawText text, String[] stopwords ) {
 		C = text;
 		S = new HashSet<String>();
@@ -130,9 +108,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		preprocess();
 	}
 
-	/**
-	 * Add a term to a block
-	 */
 	protected void blockAdd(final String term, Hashtable<String, Integer> B) {
 		Integer freq = B.get(term);
 		if (freq == null)
@@ -142,9 +117,7 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		B.put(term, freq);
 	}
 
-	/**
-	 * Compute the cosine similarity measure for two blocks
-	 */
+	/** Compute the cosine similarity measure for two blocks */
 	protected float blockCosine(final Hashtable<String,Integer> B1, final Hashtable<String,Integer> B2) {
 		/* 1. Declare variables */
 		int W; // Weight of a term (temporary variable)
@@ -185,27 +158,14 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		return sim;
 	}
 
-	/**
-	 * Remove a term from the block Creation date: (07/12/99 01:46:39)
-	 * 
-	 * @param term
-	 *            java.lang.String
-	 * @param B
-	 *            java.util.Hashtable
-	 */
 	protected void blockRemove(final String term, Hashtable<String,Integer> B) {
 		Integer freq = B.get(term);
 		if (freq != null) {
-			if (freq.intValue() == 1)
-				B.remove(term);
-			else
-				B.put(term, new Integer(freq.intValue() - 1));
+			if (freq.intValue() == 1) B.remove(term);
+			else B.put(term, new Integer(freq.intValue() - 1));
 		}
 	}
 
-	/**
-	 * Identify the boundaries Creation date: (07/12/99 07:05:04)
-	 */
 	protected void boundaryIdentification() {
 		/* Declare variables */
 		float mean = 0; // Mean depth score
@@ -268,9 +228,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		}
 	}
 
-	/**
-	 * Compute depth score after applying similarityDetermination()
-	 */
 	protected void depthScore() {
 		/* Declare variables */
 		float maxima = 0; // Local maxima
@@ -295,10 +252,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 	}
 
 
-	/**
-	 * Generate text output with topic boundary markers. Creation date:
-	 * (07/12/99 07:39:00)
-	 */
 	protected static void genOutput( RawText c, Vector<Integer> seg ) throws IOException {
 		/* Declare variables */
 		Vector<String> text = c.text; // The text
@@ -328,9 +281,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		System.out.println(aux);
 	}
 
-	/**
-	 * Decide whether word i is worth using as feature for segmentation.
-	 */
 	protected boolean include(int i) {
 		/*
 		 * Noise reduction by filtering out everything but nouns and verbs -
@@ -343,9 +293,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		return !S.contains(token.toLowerCase());
 	}
 
-	/**
-	 * Perform some preprocessing to save execution time
-	 */
 	protected void preprocess() {
 		//TODO: PorterStemmer stemmer = new PorterStemmer();
 		Vector<String> text = C.text; // Text of the collection
@@ -364,9 +311,6 @@ public class TextTilingParagraphModel extends com.aliasi.sentences.AbstractSente
 		}
 	}
 
-	/**
-	 * Compute the similarity score. Creation date: (07/12/99 03:17:31)
-	 */
 	protected void similarityDetermination() {
 		/* Declare variables */
 		Vector<String> text = C.text; // The source text
@@ -439,14 +383,8 @@ class RawText {
 
 	public Vector<Integer> boundaries = new Vector<Integer>(100,20);
 
-	/**
-	 * Collection constructor comment.
-	 */
 	public RawText() { super(); }
 
-	/**
-	 * Load a collection from a reader
-	 */
 	public RawText(Reader in) {
 		try {
 			Reader r = new BufferedReader(in);
@@ -455,9 +393,6 @@ class RawText {
 		} catch (Exception e) {}
 	}
 
-	/**
-	 * Load a collection from input stream
-	 */
 	public RawText(InputStream in) {
 		try {
 			Reader r = new BufferedReader(new InputStreamReader(in));
@@ -466,9 +401,6 @@ class RawText {
 		} catch (Exception e) {}
 	}
 
-	/**
-	 * Load a collection from disk
-	 */
 	public RawText(File file) {
 		try {
 			Reader r = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
@@ -477,9 +409,6 @@ class RawText {
 		} catch (Exception e) {}
 	}
 
-	/**
-	 * Load a collection from disk
-	 */
 	public RawText(String data) {
 		try {
 			Reader r = new BufferedReader(new StringReader(data));
@@ -488,9 +417,6 @@ class RawText {
 		} catch (Exception e) {}
 	}
 
-	/**
-	 * Parse a formatted stream.
-	 */
 	protected void parse(Reader r) {
 		StreamTokenizer tk = new StreamTokenizer(r);
 		tk.resetSyntax();
